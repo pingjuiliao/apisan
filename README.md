@@ -4,6 +4,42 @@ APISAN is a tool that automatically infers correct API usages from source code w
 
 This repository has analysis tool and LLVM. LLVM related files follow their own license(LICENSE.LLVM), and analysis tool is provided under the terms of the MIT license.
 
+## How to use in docker
+build image
+```
+docker build -t apisan:latest .
+```
+
+run image
+```
+docker run -it --rm apisan:latest
+```
+
+test: same as normal usage
+```
+root@docker# cd test/return-value
+root@docker# ../../apisan build make
+root@docker# ../../apisan check --checker=rvchk
+```
+
+## NOTE
+### changed file:
+**analyzer/bin/main.py**  
+In docker, #! cannot be deteced except that it's in the first line, so the MIT license line is deleted.
+gonna change it back
+
+### required package:
+- libboost-all-dev: for SymExecExtractor.cpp  
+- python2: for old cmake compatibility  
+- python3: for apisan python script  
+
+### other
+- Decision: not using setup.sh for docker  
+  - requires 'bash ./setup.sh' to perform pushd/popd correctly.
+  - we can see the building progress but there will be no files in LLVM_BUILD_DIR, i.e. bin/llvm
+  - The building process does not complain about missing <boost/...> libraries
+- 'cmake -B<build_dir> -H<source_dir>' cannot be used due to old cmake version.
+
 ## How to use
 - Tested in Ubuntu 14.04
 - Setup
